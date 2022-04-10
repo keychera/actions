@@ -15,7 +15,7 @@ class CheckAction<CheckType>(
      * terminal assertion operation
      */
     fun isEqualTo(expected: CheckType) {
-        val toCheck = getValueToCheck.invoke(fromBy)
+        val toCheck = getValueToCheck(fromBy)
         if (toCheck != null) {
             assertThat(toCheck).isEqualTo(expected)
         } else {
@@ -27,7 +27,7 @@ class CheckAction<CheckType>(
      * terminal assertion operation
      */
     fun isEqualTo(expected: CheckType, softly: SoftAssertions) {
-        val toCheck = getValueToCheck.invoke(fromBy)
+        val toCheck = getValueToCheck(fromBy)
         if (toCheck != null) {
             softly.assertThat(toCheck).isEqualTo(expected)
         } else {
