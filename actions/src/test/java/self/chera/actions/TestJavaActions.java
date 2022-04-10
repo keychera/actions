@@ -9,10 +9,10 @@ public class TestJavaActions {
     @Test
     void verifyTheAction() {
         var web = TestingOnWhat.testOnWeb();
-        web.getDriver().get(TestGlobal.practiceSeleniumUrl);
-        web.check(By.id("domain"))
+        web.getDriver().get(TestGlobal.cheraSite);
+        web.check(By.id("post-link"))
                 .whether(WebElement::getText)
-                .isEqualTo("practiceselenium.com");
+                .isEqualTo("Here is Chera!");
         web.getDriver().quit();
     }
 }
