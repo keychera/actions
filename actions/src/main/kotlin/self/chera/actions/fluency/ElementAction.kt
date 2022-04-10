@@ -5,8 +5,8 @@ import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 
 class ElementAction<ElementType : WebElement>(
-    private val fromBy: By,
-    private val getTheElement: (By) -> ElementType?
+    val fromBy: By,
+    val getTheElement: (By) -> ElementType?
 ) {
     /**
      * intermediate operation

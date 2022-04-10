@@ -12,6 +12,7 @@ class TestKotlinActions {
     @BeforeEach
     fun createAction() {
         web = TestingOnWhat.testOnWeb()
+        web.driver.get(TestGlobal.practiceSeleniumUrl)
     }
 
     @AfterEach
@@ -19,8 +20,6 @@ class TestKotlinActions {
 
     @Test
     fun `Verify that assertion happens on existing element`() {
-        web.driver.get(TestGlobal.practiceSeleniumUrl)
-
         web.check(By.id("domain"))
             .whether { it?.text }
             .isEqualTo("a practiceselenium.com")
@@ -28,7 +27,27 @@ class TestKotlinActions {
 
     @Test
     fun `Verify wait action API`() {
-        web.waitUtil(By.id("some-id"))
+        web.waitUntil(By.id("some-id"))
             .isVisible()
+    }
+
+    @Test
+    fun `Verify multiple check API`() {
+        web.check(
+            By.id("domain"),
+            By.id("doesnt exist"),
+            By.id("domainInfo")
+        )
+            .whether { it?.text }
+            .isEqualTo("a practiceselenium.com")
+    }
+
+    @Test
+    fun `Verify multiple wait API`() {
+        web.waitUntil(
+            By.id("domain"),
+            By.id("doesnt exist"),
+            By.id("domainInfo")
+        ).isVisible()
     }
 }

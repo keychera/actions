@@ -1,5 +1,6 @@
 package self.chera.actions.fluency
 
+import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.Assertions.assertThat
 import org.openqa.selenium.By
 
@@ -10,7 +11,13 @@ class CheckAction<CheckType>(
     /**
      * terminal operation
      */
-    fun isEqualTo(toCheck: CheckType) {
-        assertThat(getValueToCheck.invoke(fromBy)).isEqualTo(toCheck)
+    @JvmOverloads
+    fun isEqualTo(
+        expected: CheckType,
+        getAssertAgent: (CheckType?) -> AbstractAssert<*, *> = { assertThat(it) }
+    ) {
+        val toCheck = getValueToCheck.invoke(fromBy)
+        getAssertAgent(toCheck).isEqualTo(expected)
     }
+
 }
