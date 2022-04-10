@@ -9,8 +9,8 @@ class MultiCheckAction<CheckType>(
      * terminal operation
      */
     fun isEqualTo(expected: CheckType) {
-        val softly = SoftAssertions()
-        checkActions.forEach { it.isEqualTo(expected, softly) }
-        softly.assertAll()
+        SoftAssertions.assertSoftly { softly ->
+            checkActions.forEach { it.isEqualTo(expected, softly) }
+        }
     }
 }

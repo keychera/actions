@@ -1,5 +1,8 @@
 package self.chera.actions.fluency
 
+import arrow.core.Validated
+import arrow.core.invalid
+import arrow.core.valid
 import org.openqa.selenium.By
 import org.openqa.selenium.TimeoutException
 import org.openqa.selenium.WebDriver
@@ -16,12 +19,13 @@ class WaitAction<DriverType : WebDriver, ElementType : WebElement>(
     private val timeout: Long = 5
 ) {
 
-    private fun untilVisibleThenGet(): ElementType? {
+    private fun untilVisibleThenGet(): Validated<RuntimeException, ElementType> {
         return try {
             val wait = WebDriverWait(driver, Duration.ofSeconds(timeout))
-            wait.until(ExpectedConditions.visibilityOfElementLocated(fromBy)) as ElementType?
+            val element = wait.until(ExpectedConditions.visibilityOfElementLocated(fromBy))
+            (element as ElementType).valid()
         } catch (ex: TimeoutException) {
-            null
+            ex.invalid()
         }
     }
 
@@ -29,7 +33,7 @@ class WaitAction<DriverType : WebDriver, ElementType : WebElement>(
      * terminal operation
      */
     fun isVisible(): Boolean {
-        return untilVisibleThenGet() != null
+        return untilVisibleThenGet().isValid
     }
 
     /**
