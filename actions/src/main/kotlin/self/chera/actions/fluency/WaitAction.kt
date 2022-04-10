@@ -12,11 +12,11 @@ import java.time.Duration
 @Suppress("UNCHECKED_CAST")
 class WaitAction<DriverType : WebDriver, ElementType : WebElement>(
     private val driver: DriverType,
-    val fromBy: By,
+    private val fromBy: By,
     private val timeout: Long = 5
 ) {
 
-    fun untilVisibleThenGet(): ElementType? {
+    private fun untilVisibleThenGet(): ElementType? {
         return try {
             val wait = WebDriverWait(driver, Duration.ofSeconds(timeout))
             wait.until(ExpectedConditions.visibilityOfElementLocated(fromBy)) as ElementType?

@@ -23,9 +23,7 @@ class MultiWaitAction<DriverType : WebDriver, ElementType : WebElement>(
      * intermediate operation
      */
     fun isVisibleAndThen(): MultiElementAction<ElementType> {
-        val elementActions = waitActions.map { wait ->
-            ElementAction(wait.fromBy) { wait.untilVisibleThenGet() }
-        }
+        val elementActions = waitActions.map { it.isVisibleAndThen() }
         return MultiElementAction(elementActions)
     }
 }

@@ -10,9 +10,7 @@ class MultiCheckAction<CheckType>(
      */
     fun isEqualTo(expected: CheckType) {
         val softly = SoftAssertions()
-        checkActions.forEach { checkAction ->
-            checkAction.isEqualTo(expected, softly)
-        }
+        checkActions.forEach { it.isEqualTo(expected, softly) }
         softly.assertAll()
     }
 }
