@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'actions'
-include('app', 'list', 'utilities')
+include('app', 'actions', 'list', 'utilities')
