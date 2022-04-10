@@ -26,6 +26,13 @@ class TestKotlinActions {
     }
 
     @Test
+    fun `Verify that assertion happens on non-existing element`() {
+        web.check(By.id("doesnt exist"))
+            .whether { it?.text }
+            .isEqualTo("a Here is Chera!")
+    }
+
+    @Test
     fun `Verify wait action API`() {
         web.waitUntil(By.id("some-id"))
             .isVisible()
