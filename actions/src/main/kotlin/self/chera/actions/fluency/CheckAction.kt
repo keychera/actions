@@ -11,7 +11,6 @@ class CheckAction<CheckType>(
     private val fromBy: By,
     private val getValueToCheck: (By) -> Validated<RuntimeException, CheckType>
 ) {
-    private val notFoundMessage = "Failed to find element [$fromBy]"
 
     /**
      * terminal assertion operation
@@ -49,7 +48,7 @@ class CheckAction<CheckType>(
             is TimeoutException -> "[⌛] ${error.rawMessage}"
             else -> error.message
         }
-        return "\n$notFoundMessage\nerror ${message}\n"
+        return "\n${ErrorMessage.notFound(fromBy)}\nerror ${message}\n"
     }
 
     private fun composeEqualityError(toCheck: CheckType, expected: CheckType): String {

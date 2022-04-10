@@ -26,4 +26,16 @@ open class BaseAction<DriverType : WebDriver, ElementType : WebElement>(
     fun waitUntil(vararg bys: By): MultiWaitAction<DriverType, ElementType> {
         return MultiWaitAction(driver, bys.toList())
     }
+
+    fun get(by: By) = waitUntil(by).isVisibleAndThen().get()
+
+    fun click(by: By) {
+        waitUntil(by).isVisibleAndThen().get().click()
+    }
+
+    fun sendKeys(by: By, value: String) {
+        waitUntil(by).isVisibleAndThen().get().sendKeys(value)
+    }
+
+
 }

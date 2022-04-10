@@ -57,4 +57,12 @@ class TestKotlinActions {
             By.className("post-meta")
         ).isVisible()
     }
+
+    @Test
+    fun `Verify WebElement interfaces is accessible`() {
+        web.get(By.className("post-meta")).text.let { System.err.println(it) }
+        web.click(By.className("post-link"))
+        web.click(By.id("doesnt exist"))
+        web.sendKeys(By.id("hmm"), "some text to type")
+    }
 }

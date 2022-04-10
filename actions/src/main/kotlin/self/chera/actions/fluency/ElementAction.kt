@@ -1,16 +1,15 @@
 package self.chera.actions.fluency
 
-import arrow.core.Validated
-import arrow.core.andThen
-import arrow.core.invalid
-import arrow.core.valid
+import arrow.core.*
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
+import self.chera.actions.fluency.ErrorMessage.notFound
 
 class ElementAction<ElementType : WebElement>(
     private val fromBy: By,
     private val getTheElement: (By) -> Validated<RuntimeException, ElementType>
 ) {
+
     /**
      * intermediate operation
      */
@@ -26,4 +25,6 @@ class ElementAction<ElementType : WebElement>(
             }
         }
     }
+
+    fun get(): ElementType = getTheElement(fromBy).getOrElse { throw RuntimeException(notFound(fromBy)) }
 }
