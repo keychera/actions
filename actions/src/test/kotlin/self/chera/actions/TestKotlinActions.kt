@@ -12,23 +12,33 @@ class TestKotlinActions {
     @BeforeEach
     fun createAction() {
         web = TestingOnWhat.testOnWeb()
-        web.driver.get(TestGlobal.cheraSite)
+        web.driver[TestGlobal.cheraSite]
     }
 
     @AfterEach
     fun cleanUp() = web.driver.quit()
 
     @Test
+    fun thisMethodIsHaveJavaCounterpart() {
+        web.check(By.className("post-link"))
+            .whether { text }
+            .isEqualTo("Here is Chera!")
+        web.check(By.className("post-link"))
+            .whether { text }
+            .isEqualTo("Some data")
+    }
+
+    @Test
     fun `Verify that assertion happens on existing element`() {
         web.check(By.className("post-link"))
-            .whether { it?.text }
+            .whether { text }
             .isEqualTo("a Here is Chera!")
     }
 
     @Test
     fun `Verify that assertion happens on non-existing element`() {
         web.check(By.id("doesnt exist"))
-            .whether { it?.text }
+            .whether { text }
             .isEqualTo("a Here is Chera!")
     }
 
@@ -45,7 +55,7 @@ class TestKotlinActions {
             By.id("doesnt exist"),
             By.className("post-meta")
         )
-            .whether { it?.text }
+            .whether { text }
             .isEqualTo("Here is Chera!")
     }
 

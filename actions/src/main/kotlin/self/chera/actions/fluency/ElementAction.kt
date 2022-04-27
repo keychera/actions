@@ -13,7 +13,7 @@ class ElementAction<ElementType : WebElement>(
     /**
      * intermediate operation
      */
-    fun <CheckType> whether(getTheValue: (ElementType?) -> CheckType?): CheckAction<CheckType> {
+    fun <CheckType> whether(getTheValue: ElementType.() -> CheckType?): CheckAction<CheckType> {
         return CheckAction(fromBy) {
             getTheElement(it).andThen { element ->
                 try {
