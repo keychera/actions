@@ -1,5 +1,6 @@
 package self.chera.actions
 
+import org.assertj.core.api.SoftAssertions
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
@@ -37,5 +38,13 @@ open class BaseAction<Driver : WebDriver, Element : WebElement>(
         waitUntil(by).isVisibleAndThen().get().sendKeys(value)
     }
 
-
+    fun <Val : Any> doThese(
+        vararg assertAction: (Driver) -> SoftAssertions.() -> Val?
+    ) {
+        SoftAssertions.assertSoftly { softly ->
+            assertAction.forEach { doAssert ->
+                doAssert(driver)(softly)
+            }
+        }
+    }
 }

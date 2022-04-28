@@ -10,22 +10,30 @@ class Assert<Source : Any, TypeToAssert : Any>(
     private val toAssert: (Source) -> Either<Throwable, TypeToAssert>,
     private val context: Context<Source?>
 ) {
-    fun isEqualTo(expected: TypeToAssert): (Source) -> SoftAssertions.() -> Unit {
-        val assertAction: (Source) -> SoftAssertions.() -> Unit = { source ->
+    fun isEqualTo(expected: TypeToAssert): (Source) -> SoftAssertions.() -> TypeToAssert? {
+        val assertAction: (Source) -> SoftAssertions.() -> TypeToAssert? = { source ->
             toAssert(source).fold(
-                { error -> { fail(composeExceptionError(error)) } },
+                { error ->
+                    {
+                        fail<Any>(composeExceptionError(error))
+                        null
+                    }
+                },
                 { actual ->
                     {
                         assertThat(actual)
                             .withFailMessage(composeEqualityError(actual, expected))
                             .isEqualTo(expected)
+                        actual
                     }
                 }
             )
         }
         // source/driver is null for MultiWait or doThese
         if (context.source != null) {
-            SoftAssertions.assertSoftly(assertAction(context.source))
+            SoftAssertions.assertSoftly {
+                assertAction(context.source)(it)
+            }
         }
         return assertAction
     }

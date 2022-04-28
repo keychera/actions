@@ -5,7 +5,10 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.openqa.selenium.By
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.WebElement
 import self.chera.TestGlobal
+import self.chera.actions.Expressions.check
 
 class TestKotlinActions {
     private lateinit var web: WebAction
@@ -34,6 +37,12 @@ class TestKotlinActions {
                     .isEqualTo("Some data")
             }.isInstanceOf(Throwable::class.java)
         }
+
+        web.doThese(
+            check<WebDriver, WebElement>(By.className("post-link")).whether { text }.isEqualTo("DO THESE"),
+            check<WebDriver, WebElement>(By.id("doesnt exist")).whether { text }.isEqualTo("DO THESE"),
+            check<WebDriver, WebElement>(By.className("post-meta")).whether { text }.isEqualTo("DO THESE"),
+        )
     }
 
     @Test

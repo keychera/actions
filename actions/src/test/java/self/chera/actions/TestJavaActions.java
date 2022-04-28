@@ -8,6 +8,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import self.chera.TestGlobal;
 
+import static self.chera.actions.Expressions.check;
+
 public class TestJavaActions {
     BaseAction<?, ?> web;
 
@@ -36,8 +38,13 @@ public class TestJavaActions {
                             .whether(WebElement::getText)
                             .isEqualTo("Some data")
             ).isInstanceOf(Throwable.class);
-        });
 
+        });
+        web.doThese(
+                check(By.className("post-link")).whether(WebElement::getText).isEqualTo("DO THESE"),
+                check(By.id("doesn't exist")).whether(WebElement::getText).isEqualTo("DO THESE"),
+                check(By.className("post-meta")).whether(WebElement::getText).isEqualTo("DO THESE")
+        );
 
     }
 }
