@@ -9,6 +9,7 @@ import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
+import self.chera.actions.fluency.internal.Context
 import java.time.Duration
 
 class Wait<Driver : WebDriver, Target : WebElement>(
@@ -29,7 +30,7 @@ class Wait<Driver : WebDriver, Target : WebElement>(
         }
     }
 
-    fun isVisibleAndThen() = Element(waitAction, context)
+    fun isVisibleAndThen() = Value(waitAction, context)
 
     fun isVisible(): Boolean {
         return (context.source ?: throw IllegalAccessException("No context driver supplied!"))

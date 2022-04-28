@@ -1,10 +1,9 @@
 package self.chera.actions.fluency.multi
 
-import org.openqa.selenium.WebElement
-import self.chera.actions.fluency.Element
+import self.chera.actions.fluency.Value
 
-class MultiElement<Source : Any, Type : WebElement>(
-    private val elementActions: List<Element<Source, Type>>,
+class MultiValue<Source : Any, Type : Any>(
+    private val values: List<Value<Source, Type>>,
     private val contextSource: Source
 ) {
     /**
@@ -12,7 +11,7 @@ class MultiElement<Source : Any, Type : WebElement>(
      */
     fun <TypeToAssert : Any> whether(getTheValue: Type.() -> TypeToAssert?): MultiAssert<Source, TypeToAssert> {
         return MultiAssert(
-            elementActions.map { it.whether(getTheValue) }, contextSource
+            values.map { it.whether(getTheValue) }, contextSource
         )
     }
 }

@@ -3,6 +3,8 @@ package self.chera.actions.fluency
 import arrow.core.Either
 import org.assertj.core.api.SoftAssertions
 import org.openqa.selenium.TimeoutException
+import self.chera.actions.fluency.internal.Context
+import self.chera.actions.fluency.internal.ErrorMessage
 
 class Assert<Source : Any, TypeToAssert : Any>(
     private val toAssert: (Source) -> Either<Throwable, TypeToAssert>,

@@ -3,27 +3,27 @@ package self.chera.actions
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
-import self.chera.actions.fluency.Element
+import self.chera.actions.fluency.Value
 import self.chera.actions.fluency.Wait
-import self.chera.actions.fluency.multi.MultiElement
+import self.chera.actions.fluency.multi.MultiValue
 import self.chera.actions.fluency.multi.MultiWait
 
-open class BaseAction<DriverType : WebDriver, ElementType : WebElement>(
-    val driver: DriverType
+open class BaseAction<Driver : WebDriver, Element : WebElement>(
+    val driver: Driver
 ) {
-    fun check(by: By): Element<DriverType, ElementType> {
+    fun check(by: By): Value<Driver, Element> {
         return waitUntil(by).isVisibleAndThen()
     }
 
-    fun check(vararg bys: By): MultiElement<DriverType, ElementType> {
+    fun check(vararg bys: By): MultiValue<Driver, Element> {
         return waitUntil(*bys).isVisibleAndThen()
     }
 
-    fun waitUntil(by: By): Wait<DriverType, ElementType> {
+    fun waitUntil(by: By): Wait<Driver, Element> {
         return Wait(by = by, timeout = 5, driver = driver)
     }
 
-    fun waitUntil(vararg bys: By): MultiWait<DriverType, ElementType> {
+    fun waitUntil(vararg bys: By): MultiWait<Driver, Element> {
         return MultiWait(bys.toList(), driver)
     }
 

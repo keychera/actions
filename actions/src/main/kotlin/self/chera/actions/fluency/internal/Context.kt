@@ -1,4 +1,4 @@
-package self.chera.actions.fluency
+package self.chera.actions.fluency.internal
 
 import org.openqa.selenium.By
 

@@ -24,8 +24,8 @@ class MultiWait<Driver : WebDriver, Target : WebElement>(
     /**
      * intermediate operation
      */
-    fun isVisibleAndThen(): MultiElement<Driver, Target> {
+    fun isVisibleAndThen(): MultiValue<Driver, Target> {
         val elementActions = waitActions.map { it.isVisibleAndThen() }
-        return MultiElement(elementActions, contextDriver)
+        return MultiValue(elementActions, contextDriver)
     }
 }

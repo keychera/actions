@@ -1,14 +1,15 @@
 package self.chera.actions.fluency
 
 import arrow.core.*
+import self.chera.actions.fluency.internal.Context
 
-class Element<Source : Any, Type : Any>(
-    private val element: (Source) -> Either<Throwable, Type>,
+class Value<Source : Any, Type : Any>(
+    private val value: (Source) -> Either<Throwable, Type>,
     private val context: Context<Source?>
 ) {
     fun <TypeToAssert : Any> whether(
         getTheValue: Type.() -> TypeToAssert?
-    ) = Assert(element.andThen {
+    ) = Assert(value.andThen {
         it.flatMap { current ->
             getTheValue(current)?.right()
                 ?: RuntimeException("Null value received on `Whether` step").left()
@@ -18,7 +19,7 @@ class Element<Source : Any, Type : Any>(
     fun get(): Type {
         return (context.source ?: throw IllegalAccessException("No source supplied!"))
             .let { fromSource ->
-                element(fromSource).getOrHandle { throw it }
+                value(fromSource).getOrHandle { throw it }
             }
     }
 }
