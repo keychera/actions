@@ -1,5 +1,6 @@
 package self.chera.actions
 
+import org.assertj.core.api.SoftAssertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,13 +20,20 @@ class TestKotlinActions {
     fun cleanUp() = web.driver.quit()
 
     @Test
-    fun thisMethodIsHaveJavaCounterpart() {
-        web.check(By.className("post-link"))
-            .whether { text }
-            .isEqualTo("Here is Chera!")
-        web.check(By.className("post-link"))
-            .whether { text }
-            .isEqualTo("Some data")
+    fun thisMethodHasJavaCounterpart() {
+        SoftAssertions.assertSoftly {
+            it.assertThatCode {
+                web.check(By.className("post-link"))
+                    .whether { text }
+                    .isEqualTo("Here is Chera!")
+            }.doesNotThrowAnyException()
+
+            it.assertThatThrownBy {
+                web.check(By.className("post-link"))
+                    .whether { text }
+                    .isEqualTo("Some data")
+            }.isInstanceOf(Throwable::class.java)
+        }
     }
 
     @Test

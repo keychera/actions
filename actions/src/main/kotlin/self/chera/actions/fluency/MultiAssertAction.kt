@@ -10,7 +10,7 @@ class MultiAssertAction<TypeToAssert>(
      */
     fun isEqualTo(expected: TypeToAssert) {
         SoftAssertions.assertSoftly { softly ->
-            assertActions.forEach { it.isEqualTo(expected, softly) }
+            assertActions.forEach { it.isEqualTo(expected)(softly) }
         }
     }
 }

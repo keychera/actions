@@ -7,24 +7,27 @@ import self.chera.actions.fluency.ErrorMessage.notFound
 
 class ElementAction<ElementType : WebElement>(
     private val fromBy: By,
-    private val getTheElement: (By) -> Validated<RuntimeException, ElementType>
+    private val isEager: Boolean,
+    private val getTheElement: () -> Either<RuntimeException, ElementType>,
 ) {
 
     /**
      * intermediate operation
      */
     fun <TypeToAssert> whether(getTheValue: ElementType.() -> TypeToAssert?): AssertAction<TypeToAssert> {
-        return AssertAction(fromBy) {
-            getTheElement(it).andThen { element ->
-                try {
-                    getTheValue(element)?.valid()
-                        ?: NullPointerException("The value retrieved from [$fromBy] is null!").invalid()
-                } catch (ex: RuntimeException) {
-                    ex.invalid()
+        return AssertAction(fromBy, isEager,
+            getTheElement.andThen {
+                it.flatMap { element ->
+                    try {
+                        getTheValue(element)?.right()
+                            ?: NullPointerException("The value retrieved from [$fromBy] is null!").left()
+                    } catch (ex: RuntimeException) {
+                        ex.left()
+                    }
                 }
             }
-        }
+        )
     }
 
-    fun get(): ElementType = getTheElement(fromBy).getOrElse { throw RuntimeException(notFound(fromBy)) }
+    fun get(): ElementType = getTheElement().getOrElse { throw RuntimeException(notFound(fromBy)) }
 }

@@ -20,7 +20,7 @@ open class BaseAction<DriverType : WebDriver, ElementType : WebElement>(
     }
 
     fun waitUntil(by: By): WaitAction<DriverType, ElementType> {
-        return WaitAction(driver, by)
+        return WaitAction(driver = driver, fromBy = by, timeout = 5, isEager = true)
     }
 
     fun waitUntil(vararg bys: By): MultiWaitAction<DriverType, ElementType> {
