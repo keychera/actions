@@ -8,7 +8,7 @@ class MultiElementAction<ElementType : WebElement>(
     /**
      * intermediate operation
      */
-    fun <CheckType> whether(getTheValue: ElementType.() -> CheckType?): MultiCheckAction<CheckType> {
-        return MultiCheckAction(elementActions.map { it.whether(getTheValue) })
+    fun <TypeToAssert> whether(getTheValue: ElementType.() -> TypeToAssert?): MultiAssertAction<TypeToAssert> {
+        return MultiAssertAction(elementActions.map { it.whether(getTheValue) })
     }
 }

@@ -13,8 +13,8 @@ class ElementAction<ElementType : WebElement>(
     /**
      * intermediate operation
      */
-    fun <CheckType> whether(getTheValue: ElementType.() -> CheckType?): CheckAction<CheckType> {
-        return CheckAction(fromBy) {
+    fun <TypeToAssert> whether(getTheValue: ElementType.() -> TypeToAssert?): AssertAction<TypeToAssert> {
+        return AssertAction(fromBy) {
             getTheElement(it).andThen { element ->
                 try {
                     getTheValue(element)?.valid()

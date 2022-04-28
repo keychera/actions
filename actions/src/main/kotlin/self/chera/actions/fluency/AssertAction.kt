@@ -7,21 +7,21 @@ import org.assertj.core.api.SoftAssertions
 import org.openqa.selenium.By
 import org.openqa.selenium.TimeoutException
 
-class CheckAction<CheckType>(
+class AssertAction<TypeToAssert>(
     private val fromBy: By,
-    private val getValueToCheck: (By) -> Validated<RuntimeException, CheckType>
+    private val getValueToAssert: (By) -> Validated<RuntimeException, TypeToAssert>
 ) {
 
     /**
      * terminal assertion operation
      */
-    fun isEqualTo(expected: CheckType) {
-        getValueToCheck(fromBy).bimap(
+    fun isEqualTo(expected: TypeToAssert) {
+        getValueToAssert(fromBy).bimap(
             { error -> run { fail<Any>(composeExceptionError(error)) } },
-            { toCheck ->
+            { toAssert ->
                 run {
-                    assertThat(toCheck)
-                        .withFailMessage { composeEqualityError(toCheck, expected) }
+                    assertThat(toAssert)
+                        .withFailMessage { composeEqualityError(toAssert, expected) }
                         .isEqualTo(expected)
                 }
             }
@@ -31,13 +31,13 @@ class CheckAction<CheckType>(
     /**
      * terminal assertion operation
      */
-    fun isEqualTo(expected: CheckType, softly: SoftAssertions) {
-        getValueToCheck(fromBy).bimap(
+    fun isEqualTo(expected: TypeToAssert, softly: SoftAssertions) {
+        getValueToAssert(fromBy).bimap(
             { error -> run { softly.fail<Any>(composeExceptionError(error)) } }
-        ) { toCheck ->
+        ) { toAssert ->
             run {
-                softly.assertThat(toCheck)
-                    .withFailMessage { composeEqualityError(toCheck, expected) }
+                softly.assertThat(toAssert)
+                    .withFailMessage { composeEqualityError(toAssert, expected) }
                     .isEqualTo(expected)
             }
         }
@@ -51,7 +51,7 @@ class CheckAction<CheckType>(
         return "\n${ErrorMessage.notFound(fromBy)}\nerror ${message}\n"
     }
 
-    private fun composeEqualityError(toCheck: CheckType, expected: CheckType): String {
-        return "\nerror [≠] [$fromBy]\n  expecting: $expected\n  but was: $toCheck\n"
+    private fun composeEqualityError(toAssert: TypeToAssert, expected: TypeToAssert): String {
+        return "\nerror [≠] [$fromBy]\n  expecting: $expected\n  but was: $toAssert\n"
     }
 }
