@@ -60,8 +60,9 @@ class TestKotlinActions {
     fun `Verify multiple check API`() {
         web.check(
             By.className("post-link"),
+            By.className("post-meta"),
             By.id("doesnt exist"),
-            By.className("post-meta")
+            By.className("post-meta"),
         )
             .whether { text }
             .isEqualTo("Here is Chera!")

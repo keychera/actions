@@ -3,28 +3,28 @@ package self.chera.actions
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
-import self.chera.actions.fluency.ElementAction
-import self.chera.actions.fluency.MultiElementAction
-import self.chera.actions.fluency.MultiWaitAction
-import self.chera.actions.fluency.WaitAction
+import self.chera.actions.fluency.Element
+import self.chera.actions.fluency.Wait
+import self.chera.actions.fluency.multi.MultiElement
+import self.chera.actions.fluency.multi.MultiWait
 
 open class BaseAction<DriverType : WebDriver, ElementType : WebElement>(
     val driver: DriverType
 ) {
-    fun check(by: By): ElementAction<ElementType> {
+    fun check(by: By): Element<DriverType, ElementType> {
         return waitUntil(by).isVisibleAndThen()
     }
 
-    fun check(vararg bys: By): MultiElementAction<ElementType> {
+    fun check(vararg bys: By): MultiElement<DriverType, ElementType> {
         return waitUntil(*bys).isVisibleAndThen()
     }
 
-    fun waitUntil(by: By): WaitAction<DriverType, ElementType> {
-        return WaitAction(driver = driver, fromBy = by, timeout = 5, isEager = true)
+    fun waitUntil(by: By): Wait<DriverType, ElementType> {
+        return Wait(by = by, timeout = 5, driver = driver)
     }
 
-    fun waitUntil(vararg bys: By): MultiWaitAction<DriverType, ElementType> {
-        return MultiWaitAction(driver, bys.toList())
+    fun waitUntil(vararg bys: By): MultiWait<DriverType, ElementType> {
+        return MultiWait(bys.toList(), driver)
     }
 
     fun get(by: By) = waitUntil(by).isVisibleAndThen().get()

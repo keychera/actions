@@ -1,16 +1,18 @@
-package self.chera.actions.fluency
+package self.chera.actions.fluency.multi
 
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
+import self.chera.actions.fluency.Wait
 
 
 @Suppress("UNCHECKED_CAST")
-class MultiWaitAction<DriverType : WebDriver, ElementType : WebElement>(
-    driver: DriverType, fromBys: List<By>
+class MultiWait<Driver : WebDriver, Target : WebElement>(
+    fromBys: List<By>,
+    private val contextDriver: Driver
 ) {
-    private val waitActions: List<WaitAction<DriverType, ElementType>> = fromBys
-        .map { WaitAction(driver, it) }
+    private val waitActions: List<Wait<Driver, Target>> = fromBys
+        .map { Wait(by = it) }
 
     /**
      * terminal operation
@@ -22,8 +24,8 @@ class MultiWaitAction<DriverType : WebDriver, ElementType : WebElement>(
     /**
      * intermediate operation
      */
-    fun isVisibleAndThen(): MultiElementAction<ElementType> {
+    fun isVisibleAndThen(): MultiElement<Driver, Target> {
         val elementActions = waitActions.map { it.isVisibleAndThen() }
-        return MultiElementAction(elementActions)
+        return MultiElement(elementActions, contextDriver)
     }
 }
