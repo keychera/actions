@@ -7,23 +7,47 @@ import self.chera.actions.fluency.internal.Context
 import self.chera.actions.fluency.internal.ErrorMessage
 
 class Assert<Source : Any, TypeToAssert : Any>(
-    private val toAssert: (Source) -> Either<Throwable, TypeToAssert>,
+    private val toAssert: (Source) -> Either<Throwable, TypeToAssert?>,
     private val context: Context<Source?>
 ) {
-    fun isEqualTo(expected: TypeToAssert): (Source) -> SoftAssertions.() -> Unit {
+    fun isEqualTo(expected: TypeToAssert) = composeAssertActionThatMightBeEager {
+        {
+            assertThat(it).isNotNull
+                .withFailMessage(composeEqualityError(it!!, expected))
+                .isEqualTo(expected)
+        }
+    }
+
+    fun isNotEqualTo(expected: TypeToAssert) = composeAssertActionThatMightBeEager {
+        {
+            assertThat(it).isNotNull
+                .withFailMessage(composeEqualityError(it!!, expected))
+                .isNotEqualTo(expected)
+        }
+    }
+
+    fun isNotNull() = composeAssertActionThatMightBeEager {
+        {
+            assertThat(it).isNotNull
+        }
+    }
+
+    fun isNull() = composeAssertActionThatMightBeEager {
+        {
+            assertThat(it).isNull()
+        }
+    }
+
+    private fun composeAssertActionThatMightBeEager(
+        handleActual: (TypeToAssert?) -> SoftAssertions.() -> Unit,
+    ): (Source) -> SoftAssertions.() -> Unit {
         val assertAction: (Source) -> SoftAssertions.() -> Unit = { source ->
             toAssert(source).fold(
-                { error -> { fail<Unit>(composeExceptionError(error)) } },
-                { actual ->
-                    {
-                        assertThat(actual)
-                            .withFailMessage(composeEqualityError(actual, expected))
-                            .isEqualTo(expected)
-                    }
-                }
+                { { fail<Unit>(composeExceptionError(it)) } },
+                handleActual
             )
         }
-        // source/driver is null for MultiWait or doThese
+        // eager action, source/driver is null for MultiWait or Expressions/doThese
         if (context.source != null) {
             SoftAssertions.assertSoftly {
                 assertAction(context.source)(it)

@@ -10,10 +10,7 @@ class Value<Source : Any, Type : Any>(
     fun <TypeToAssert : Any> whether(
         getTheValue: Type.() -> TypeToAssert?
     ) = Assert(value.andThen {
-        it.flatMap { current ->
-            getTheValue(current)?.right()
-                ?: RuntimeException("Null value received on `Whether` step").left()
-        }
+        it.flatMap { current -> getTheValue(current).right() }
     }, context)
 
     fun get(): Type {
