@@ -10,21 +10,15 @@ class Assert<Source : Any, TypeToAssert : Any>(
     private val toAssert: (Source) -> Either<Throwable, TypeToAssert>,
     private val context: Context<Source?>
 ) {
-    fun isEqualTo(expected: TypeToAssert): (Source) -> SoftAssertions.() -> TypeToAssert? {
-        val assertAction: (Source) -> SoftAssertions.() -> TypeToAssert? = { source ->
+    fun isEqualTo(expected: TypeToAssert): (Source) -> SoftAssertions.() -> Unit {
+        val assertAction: (Source) -> SoftAssertions.() -> Unit = { source ->
             toAssert(source).fold(
-                { error ->
-                    {
-                        fail<Any>(composeExceptionError(error))
-                        null
-                    }
-                },
+                { error -> { fail<Unit>(composeExceptionError(error)) } },
                 { actual ->
                     {
                         assertThat(actual)
                             .withFailMessage(composeEqualityError(actual, expected))
                             .isEqualTo(expected)
-                        actual
                     }
                 }
             )

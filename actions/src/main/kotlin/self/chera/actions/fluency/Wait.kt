@@ -5,26 +5,26 @@ import arrow.core.left
 import arrow.core.right
 import org.openqa.selenium.By
 import org.openqa.selenium.TimeoutException
-import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
+import self.chera.actions.BaseAction
 import self.chera.actions.fluency.internal.Context
 import java.time.Duration
 
-class Wait<Driver : WebDriver, Target : WebElement>(
+class Wait<Element : WebElement>(
     private val by: By,
-    driver: Driver? = null,
+    baseAction: BaseAction<*, Element>? = null,
     private val timeout: Long = 5,
 ) {
-    private val context: Context<Driver?> = Context(driver, by)
+    private val context: Context<BaseAction<*, Element>?> = Context(baseAction, by)
 
-    val waitAction: (Driver) -> Either<Throwable, Target> = { driver ->
+    val waitAction: (BaseAction<*, Element>) -> Either<Throwable, Element> = { base ->
         try {
-            val wait = WebDriverWait(driver, Duration.ofSeconds(timeout))
+            val wait = WebDriverWait(base.driver, Duration.ofSeconds(timeout))
             val element = wait.until(ExpectedConditions.visibilityOfElementLocated(by))
             @Suppress("UNCHECKED_CAST")
-            (element as Target).right()
+            (element as Element).right()
         } catch (ex: TimeoutException) {
             ex.left()
         }
@@ -37,5 +37,9 @@ class Wait<Driver : WebDriver, Target : WebElement>(
             .let { fromDriver ->
                 waitAction(fromDriver).isRight()
             }
+    }
+
+    fun isVisibleFrom(): (BaseAction<*, Element>) -> Boolean = {
+        waitAction(it).isRight()
     }
 }

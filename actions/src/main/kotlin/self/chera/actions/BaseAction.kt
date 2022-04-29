@@ -12,20 +12,20 @@ import self.chera.actions.fluency.multi.MultiWait
 open class BaseAction<Driver : WebDriver, Element : WebElement>(
     val driver: Driver
 ) {
-    fun check(by: By): Value<Driver, Element> {
+    fun check(by: By): Value<BaseAction<*, Element>, Element> {
         return waitUntil(by).isVisibleAndThen()
     }
 
-    fun check(vararg bys: By): MultiValue<Driver, Element> {
+    fun check(vararg bys: By): MultiValue<BaseAction<*, Element>, Element> {
         return waitUntil(*bys).isVisibleAndThen()
     }
 
-    fun waitUntil(by: By): Wait<Driver, Element> {
-        return Wait(by = by, timeout = 5, driver = driver)
+    fun waitUntil(by: By): Wait<Element> {
+        return Wait(by = by, timeout = 5, baseAction = this)
     }
 
-    fun waitUntil(vararg bys: By): MultiWait<Driver, Element> {
-        return MultiWait(bys.toList(), driver)
+    fun waitUntil(vararg bys: By): MultiWait<Element> {
+        return MultiWait(bys.toList(), this)
     }
 
     fun get(by: By) = waitUntil(by).isVisibleAndThen().get()
@@ -38,12 +38,14 @@ open class BaseAction<Driver : WebDriver, Element : WebElement>(
         waitUntil(by).isVisibleAndThen().get().sendKeys(value)
     }
 
-    fun <Val : Any> doThese(
-        vararg assertAction: (Driver) -> SoftAssertions.() -> Val?
+    @SafeVarargs
+    fun <E : WebElement> doThese(
+        vararg assertAction: (BaseAction<*, E>) -> SoftAssertions.() -> Unit
     ) {
         SoftAssertions.assertSoftly { softly ->
             assertAction.forEach { doAssert ->
-                doAssert(driver)(softly)
+                @Suppress("UNCHECKED_CAST")
+                doAssert(this as BaseAction<*, E>)(softly)
             }
         }
     }
